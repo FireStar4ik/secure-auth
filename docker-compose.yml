@@ -17,8 +17,6 @@ services:
 
   isolated-hasher:
     build: ./hasher
-    networks:
-      - secure-net
     volumes:
       - job-data:/data
 
@@ -28,5 +26,3 @@ volumes:
 networks:
   app-net:
     driver: bridge
-  secure-net:
-    driver: none

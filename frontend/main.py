@@ -1,22 +1,24 @@
-from fastapi import FastAPI, Form, Request
+from fastapi import FastAPI
 from fastapi.responses import HTMLResponse
 import requests
 
 app = FastAPI()
 
-HTML_FORM = """
-<form method="post">
-  Username: <input name="username"><br>
-  Password: <input name="password" type="password"><br>
-  <input type="submit">
-</form>
-"""
-
 @app.get("/", response_class=HTMLResponse)
 def form():
-    return HTML_FORM
+    return """
+    <form action="/register" method="post">
+        <input name="username" placeholder="Username"/>
+        <input name="password" placeholder="Password" type="password"/>
+        <button type="submit">Register</button>
+    </form>
+    """
 
-@app.post("/")
-def submit(username: str = Form(...), password: str = Form(...)):
-    response = requests.post("http://auth-service:8001/register", json={"username": username, "password": password})
-    return {"message": response.json()}
+@app.post("/register")
+def register(username: str, password: str):
+    response = requests.post("http://auth-service:8000/register", json={"username": username, "password": password})
+    return {"result": response.text}
+
+if __name__ == "__main__":
+    import uvicorn
+    uvicorn.run("main:app", host="0.0.0.0", port=8000)
