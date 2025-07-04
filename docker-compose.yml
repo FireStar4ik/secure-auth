@@ -1,0 +1,32 @@
+version: "3.9"
+
+services:
+  frontend:
+    build: ./frontend
+    networks:
+      - app-net
+    ports:
+      - "8000:8000"
+
+  auth-service:
+    build: ./auth
+    networks:
+      - app-net
+    volumes:
+      - job-data:/data
+
+  isolated-hasher:
+    build: ./hasher
+    networks:
+      - secure-net
+    volumes:
+      - job-data:/data
+
+volumes:
+  job-data:
+
+networks:
+  app-net:
+    driver: bridge
+  secure-net:
+    driver: none
